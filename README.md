@@ -14,6 +14,7 @@ AI 代理人讓 PR 數量大增，人類審查成為瓶頸。Matt Pocock 的主�
 |---|---|
 | `index.html` | 單檔網頁，可直接用瀏覽器開啟 |
 | `matt-pocock-fixing-pr-bottleneck.md` | 深度導讀 Markdown 原稿 |
+| `share_post.md` | 純文字社群分享文（約 190 字） |
 | `images/web/` | 全景圖與三張章節配圖（WebP，各有桌面 16:9 與手機 9:16） |
 | `images/hero/og_1200x630.png` | 連結分享預覽用的封面圖 |
 
