@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>給軟體工廠裝三道煞車，PR 才審得完</title>
+<meta property="og:type" content="article">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:title" content="給軟體工廠裝三道煞車，PR 才審得完">
+<meta property="og:description" content="Matt Pocock 的 PR 瓶頸演講導讀：自動檢查、自動審查、人類審查三道煞車，怎麼讓 PR 審得完。">
+<meta property="og:url" content="https://lushinshang.github.io/matt-pocock-fixing-pr-bottleneck/">
+<meta property="og:image" content="https://lushinshang.github.io/matt-pocock-fixing-pr-bottleneck/images/hero/og_1200x630.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="給軟體工廠裝三道煞車，PR 才審得完">
+<meta name="twitter:description" content="Matt Pocock 的 PR 瓶頸演講導讀：自動檢查、自動審查、人類審查三道煞車，怎麼讓 PR 審得完。">
+<meta name="twitter:image" content="https://lushinshang.github.io/matt-pocock-fixing-pr-bottleneck/images/hero/og_1200x630.png">
+<meta name="description" content="Matt Pocock 的 PR 瓶頸演講導讀：自動檢查、自動審查、人類審查三道煞車，怎麼讓 PR 審得完。">
+<style>
+:root{--bg:#f9f7f4;--fg:#1a1a1a;--muted:#5b5852;--card:#ffffff;--line:#e3dfd8;--accent:#8a4b12;--accent-bg:#f3e9dc;--link:#8a4b12;--th:#efeae2}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17161a;--fg:#ece9e4;--muted:#b3aea6;--card:#201f24;--line:#37353c;--accent:#e2a56a;--accent-bg:#2b241c;--link:#e2a56a;--th:#2a282f}}
+:root[data-theme="dark"]{--bg:#17161a;--fg:#ece9e4;--muted:#b3aea6;--card:#201f24;--line:#37353c;--accent:#e2a56a;--accent-bg:#2b241c;--link:#e2a56a;--th:#2a282f}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;font-size:17px;line-height:1.75;letter-spacing:0;-webkit-text-size-adjust:100%}
+.skip{position:absolute;left:-999px;top:8px;background:var(--fg);color:var(--bg);padding:8px 12px;border-radius:6px;z-index:100}
+.skip:focus{left:8px}
+header.hero{max-width:720px;margin:0 auto;padding:56px 16px 24px;text-align:center}
+.eyebrow{color:var(--accent);font-size:.9rem;font-weight:700;margin:0 0 12px}
+.hero h1{font-size:clamp(1.9rem,4.6vw,3rem);line-height:1.3;margin:0 0 14px;text-wrap:balance}
+.hero .sub{color:var(--muted);font-size:1.1rem;margin:0 0 10px}
+.hero .meta{color:var(--muted);font-size:.9rem;margin:0}
+nav.toc{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+nav.toc .inner{max-width:720px;margin:0 auto;display:flex;gap:4px;overflow-x:auto;padding:0 16px;height:52px;align-items:center;scrollbar-width:thin}
+nav.toc a{flex:0 0 auto;padding:10px 12px;color:var(--muted);text-decoration:none;font-size:.92rem;border-radius:8px;min-height:44px;display:inline-flex;align-items:center}
+nav.toc a:hover{color:var(--fg);background:var(--accent-bg)}
+main{max-width:720px;margin:0 auto;padding:24px 16px 72px}
+h2{font-size:clamp(1.35rem,3vw,1.7rem);line-height:1.4;margin:2.6em 0 .8em;text-wrap:balance;border-left:5px solid var(--accent);padding-left:14px;margin-left:-19px}
+h3{font-size:1.15rem;margin:2em 0 .6em}
+p{margin:0 0 1.1em}
+a{color:var(--link);text-underline-offset:3px}
+a:focus-visible,.table-wrap:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
+blockquote{margin:1.4em 0;padding:14px 18px;background:var(--accent-bg);border-radius:10px;color:var(--fg)}
+blockquote p{margin:0}
+ul,ol{padding-left:1.3em;margin:0 0 1.2em}
+li{margin:.35em 0}
+.table-wrap{overflow-x:auto;margin:1.4em 0;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:.93rem;line-height:1.6}
+th,td{padding:10px 12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+th{background:var(--th);font-weight:700}
+tr:last-child td{border-bottom:0}
+strong{font-weight:700}
+figure{margin:32px 0}
+figure.hero-figure{margin:24px auto 8px;max-width:720px}
+figure img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:contain;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,.08);background:var(--card);cursor:zoom-in}
+figure img:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+figcaption{margin:10px auto 0;font-size:14px;line-height:1.6;color:var(--muted);text-align:center}
+.lightbox{display:none;position:fixed;inset:0;z-index:200;background:rgba(20,18,14,.9);align-items:center;justify-content:center;padding:24px}
+.lightbox.is-open{display:flex}
+.lightbox img{max-width:96vw;max-height:90vh;width:auto;height:auto;border-radius:8px;box-shadow:0 12px 48px rgba(0,0,0,.5);background:#fff;cursor:zoom-out}
+.lightbox button{position:absolute;top:14px;right:14px;min-width:44px;min-height:44px;padding:8px 14px;border:0;border-radius:999px;background:#fff;color:#222;font-size:15px;cursor:pointer}
+.lightbox button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+footer{max-width:720px;margin:0 auto;padding:0 16px 48px;color:var(--muted);font-size:.85rem}
+@media (max-width:640px){body{font-size:16px}header.hero{padding-top:36px;text-align:left}h2{margin-left:0;padding-left:12px}figure img{aspect-ratio:9/16}figure.hero-figure{max-width:360px}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<a class="skip" href="#content">跳到內文</a>
+<header class="hero">
+<p class="eyebrow">深度導讀</p>
+<h1>給軟體工廠裝三道煞車，PR 才審得完</h1>
+<p class="sub">Matt Pocock〈Fixing the PR Bottleneck〉深度導讀</p>
+<p class="meta">2026-10-02 ・ 來源：<a href="https://www.youtube.com/watch?v=LlgiOCmFG_w" target="_blank" rel="noopener noreferrer">Fixing the PR Bottleneck — Matt Pocock, AIHero</a></p>
+<figure class="hero-figure"><picture><source media="(max-width: 640px)" srcset="images/web/hero/hero_9x16.webp"><img src="images/web/hero/hero_16x9.webp" alt="全文一圖看懂：三道煞車。自動檢查便宜但會說謊，對策是把模組做深；自動審查把標準放給審查者並直接 commit 修正；人類審查只對單向門審到底，PR 標出 Merge Danger，並用 retro 避免同一則留言寫兩次。後兩層是測謊機，專抓自動檢查說的謊。" tabindex="0" role="button" aria-label="放大圖片：全文一圖看懂"></picture><figcaption>導讀示意圖｜一圖看懂全文</figcaption></figure>
+</header>
+<nav class="toc" aria-label="章節導覽"><div class="inner"><a href="#s1">煞車</a><a href="#s2">檢查</a><a href="#s3">審查</a><a href="#s4">人類審查</a><a href="#s5">結論</a><a href="#s6">來源</a></div></nav>
+<main id="content">
+<p>多數團隊的 PR 早就堆著沒人看。Matt Pocock 在 AI Engineer Paris 的開場先承認這件事：沒有 AI 的年代就是如此，現在更慘，因為團隊被要求「用更少的人力做更多事」，代理人又讓 PR 的數量大幅增加。</p>
+<p>演講標題叫 Fixing the PR Bottleneck，目標很直接：讓人類審查變快。Matt 的路徑是先用前兩層擋掉爛東西，再讓留給人的那份 PR 一眼看得懂、看得出風險。他自己點出其中的悖論：靠煞車，反而跑得更快。</p>
+<blockquote>
+<p>本文依據 Matt Pocock 的演講（約 22 分鐘）、他公開的 skills 儲存庫，以及他引用的原始文件整理。凡標註「現行 repo」的內容，是 2026-10-02 查閱 GitHub 所得，演講中沒有提到。</p>
+</blockquote>
+<h2 id="s1">軟體工廠需要煞車</h2>
+<p>Matt 對「軟體工廠」（software factory）的定義很簡單：以前工作由人發起，現在有一部分改由代理人發起。他接著用假設的語氣舉例：也許有個分類器接手，把進來的東西轉成修復或重現任務；也許接上 PlanetScale 的慢查詢報告，再觸發工廠的另一條流程。這些都由確定性的程式碼觸發，沒有人在中間。</p>
+<p>這會讓更多程式碼湧進來。Matt 說，只踩油門的結果是一台「slop cannon」（垃圾加農砲）：大量沒人想碰、想看的爛 PR。所以要有煞車，也就是讓流程變慢、讓品質變高的機制。</p>
+<p>他的理由是：程式碼是代理人工作的環境，爛程式碼會生出更多爛程式碼，最後變成軟體熵的惡夢。</p>
+<p>他把煞車分成三層，像蛋糕一樣疊起來：</p>
+<div aria-label="可橫向捲動的表格" class="table-wrap" role="region" tabindex="0"><table>
+<thead>
+<tr>
+<th>層</th>
+<th>做什麼</th>
+<th>成本</th>
+<th>會出什麼問題</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>自動檢查</td>
+<td>linter、型別檢查、測試、程式碼品質指標</td>
+<td>只花 CPU</td>
+<td>會說謊：綠燈不代表可以合併</td>
+</tr>
+<tr>
+<td>自動審查</td>
+<td>代理人讀程式碼，抓測試漏掉的、看整體結構</td>
+<td>花 token</td>
+<td>若只留言，等於替人類增加閱讀量</td>
+</tr>
+<tr>
+<td>人類審查</td>
+<td>人看 PR</td>
+<td>花人力</td>
+<td>最後一層，Matt 的目標是讓它變快</td>
+</tr>
+</tbody>
+</table></div>
+<p>後兩層有個共同身分：Matt 稱它們是「lie detectors」，專門找出自動檢查說的謊。</p>
+<h2 id="s2">第一道煞車：檢查很便宜，但會說謊</h2>
+<p>Matt 先替自動檢查說話：不花 token、不花人力，只花 CPU。就算測試抓到代理人寫的 bug、要花 token 修，他覺得也花得值得。他的推測是，多數人用的檢查還不夠多，也不夠有創意。</p>
+<p>檢查怎麼說謊？Matt 給了三個從自己專案撈出來的真實例子：</p>
+<ul>
+<li><strong>同義反覆的測試（tautological test）。</strong> 實作寫了 X 貼文字數上限等於 280，測試就是 expect 上限等於 280。這種測試對結構極度敏感：常數不能改值，連改名都會失敗。他說 Opus 5 對這類測試「沉迷」，自己也不懂原因，這是他的個人觀察。</li>
+<li><strong>只讀原始檔的測試。</strong> 為了檢查畫面上兩個區塊的先後順序，測試沒有真的渲染畫面，而是把模組原始碼讀進記憶體，確認一段字出現在另一段字後面。原始碼的寫法一改，測試就壞，對程式碼結構太敏感。</li>
+<li><strong>根本不會失敗的測試。</strong> 一個用到瀏覽器 AudioContext 的函式，測試把它整個換成假的方法。真的 AudioContext 在奇怪條件下會出錯，但測試永遠碰不到那些路徑，這類錯誤只會在正式環境才出現。</li>
+</ul>
+<p>代理人沒有存心作弊，Matt 特別強調這點：它照著指示寫，只是測試跟結構綁得太緊。</p>
+<p>導讀者補一個問法：看到綠燈時，先問兩件事：測試真的跑了程式嗎？它失敗的時候，跟使用者會遇到的問題有關嗎？</p>
+<h3>讓檢查更難作弊：把模組做深</h3>
+<p>Matt 的第一個解法是回頭改程式碼的設計。他引用 John Ousterhout 在《A Philosophy of Software Design》的 deep module：用很小的介面，藏住大量的實作。他拿兩種模組對比：A 是大實作藏在小介面後面；B 是介面很大、函式很多，每個函式卻沒做什麼事。（書中把 B 這類稱為 shallow module，講者沒有用這個詞。）</p>
+<p>為什麼這樣測試會變好？介面小，內部細節藏得多，測試只要從介面走，就比較不會綁死結構。但代理人不會自動這樣做，Matt 說你的工作是強制它用那個小介面，不要伸手進實作去測奇怪的細節。</p>
+<p>演講中他也展示了一個 skill，能掃描程式碼庫、列出「deepening modules」的機會，產出一份 HTML 文件，附重構前後對照，之後可以直接動手實作。</p>
+<p>現行 repo：演講中沒有念出這個 skill 的名稱，依功能對照，應是 <code>improve-codebase-architecture</code>（推定），說明寫著目的是可測試性與 AI 的可導航性。</p>
+<p>他還整理了一套 codebase design 的用語：locality 講改動集中的程度，leverage 講呼叫者用簡單呼叫換到多少價值，另外還有 seam。他的理由是各家講程式碼結構的說法太多，團隊需要一套共同語言。</p>
+<h2 id="s3">第二道煞車：別把標準塞給實作者</h2>
+<p>整場演講最反直覺的論點在這裡。多數人想讓代理人遵守編碼標準，直覺是寫進 <code>AGENTS.md</code> 或實作者的提示詞。Matt 的建議正好相反：<strong>不要把編碼標準放進實作代理人。</strong></p>
+<p>他的推理分成實作與審查兩邊。</p>
+<p>實作這一邊，單一脈絡視窗裡，已經要做探索（找要改的程式碼）、修改檔案、除錯與跑檢查，工作量很滿，再壓上標準，表現會變差。他的說法是實作「overloaded」。放進 <code>AGENTS.md</code> 也一樣，標準會淹沒實作者，它可能讀，也可能不讀。</p>
+<p>審查那一邊，代理人被放在一個 sub agent 裡執行，有自己的脈絡視窗與預算。它拿到 diff，只需要做一點探索來理解上下文，不必實作也不必除錯，所以是「underloaded」，可以放心把很多標準堆給它。</p>
+<figure class="section-figure"><picture><source media="(max-width: 640px)" srcset="images/web/figs/fig_load_9x16.webp"/><img alt="實作代理人的脈絡視窗很滿（探索、修改檔案、除錯與跑檢查），再塞編碼標準表現變差；審查代理人是 sub agent，有自己的脈絡視窗與預算，只看 diff、不實作也不除錯，可以放心堆編碼標準。這是講者的論點。" aria-label="放大圖片：實作者與審查者的負擔對照（講者的論點）" loading="lazy" role="button" src="images/web/figs/fig_load_16x9.webp" tabindex="0"/></picture><figcaption>導讀示意圖｜實作者與審查者的負擔對照（講者的論點）</figcaption></figure>
+<p>因此他把寫出好程式碼拆成兩階段：先實作，讓它能動；再審查，讓它變好。他自己的類比是 red-green-refactor：一個脈絡視窗做紅燈綠燈，另一個脈絡視窗做重構。標準寫在專案裡一個叫 coding standards.md 的檔案，由你自己撰寫與調整，只有審查代理人會讀它。</p>
+<p>現行 repo：這個檔名是 <code>CODING_STANDARDS.md</code>，屬於使用者自己的專案，不是 Matt 的 skills 儲存庫附送的檔案。</p>
+<h3>審查代理人要 commit，不要留言</h3>
+<p>Matt 說很多人會讓審查代理人讀完程式碼後在 PR 上留言。他認為這等於替人類審查者增加工作：人還要讀完一大串囉嗦的留言，再決定改不改。他的預設是：審查代理人直接 commit 修正，有疑問才留言。這樣人類審查時，看到的是一份已經整理過的產物。接著就是這段的主旨：Stop trying to one-shot good code，別再逼實作代理人一次就寫出好程式碼。</p>
+<p>現行 repo：<code>code-review</code> skill 目前的做法是 Standards 與 Spec 兩軸，各派一個 sub-agent 並行審查，再把兩份報告並列呈現，沒有看到自動 commit 修正的步驟，「預設 commit」是 Matt 在演講中的主張。標準的來源除了專案自己的 <code>CODING_STANDARDS.md</code>、<code>CONTRIBUTING.md</code>，還固定帶一組出自 Fowler《Refactoring》的 code smell 基準。</p>
+<h3>為什麼不外包</h3>
+<p>他聊過的人，很多都說直接用第三方服務，例如 Cursor 的 Bugbot 或 CodeRabbit。Matt 自己試過做通用的 code review skill，要找 bug、做安全審查，結果不是太籠統而充滿與專案無關的誤報，就是太特定（只管 TypeScript）而其他人用不了。所以他建議自己建，長期累積編碼標準，在團隊內共用；手邊那些沒人讀的文件，也可以搬進來。</p>
+<h2 id="s4">第三道煞車：讓人類審查更快看懂</h2>
+<p>走到人手上，Matt 想做的是縮短「看懂」的時間，並判斷哪些 PR 不必細看。他的 <code>pr</code> skill 當時還在進行中，他坦白說還沒搞清楚這類做法的最佳解，所以乾脆偷各家最好的點子，打算之後釋出。</p>
+<h3>兩扇門：只有單向門要審到底</h3>
+<p>他的第一個原則是：不是每個 PR 都同等重要。他借用 Amazon 的「one-way door／two-way door」概念。Jeff Bezos 在 <a href="https://s2.q4cdn.com/299287126/files/doc_financials/annual/2015-Letter-to-Shareholders.PDF" rel="noopener noreferrer" target="_blank">2015 年致股東信</a>裡，把幾乎不可逆的決策稱為 Type 1，也就是 one-way door，需要慎重、緩慢地決定；可逆的決策是 Type 2，也就是 two-way door，可以快速決定。信裡還點出一個常見毛病：組織變大之後，容易把重量級的 Type 1 流程套在大多數決策上，結果是變慢、不敢冒險。Matt 在演講中說這是 AWS 的用語，原始出處是 Amazon 的這封信。</p>
+<p>多數 PR 是 two-way door，合併後還能撤回，這是軟體工程師相對土木工程師的福氣。但他提醒要小心：一個看似簡單的改動，可能不小心把一封信寄給大約 6 萬人，那就變成 one-way door；涉及昂貴的資料搬遷或資料遺失的，也一樣。這類 PR 要「審到底」。</p>
+<p>他同時要看 blast radius（爆炸半徑）：出事的話會多糟。所以他的每個 PR 最下面都有一段 Merge Danger，標明是哪種門、影響範圍多大。看到「two-way door、局部」，他就知道不用太費神，簡單看過就好。他的結論是，不需要審每一個 two-way door，每一個 one-way door 則都要審。</p>
+<figure class="section-figure"><picture><source media="(max-width: 640px)" srcset="images/web/figs/fig_doors_9x16.webp"/><img alt="雙向門合併後還能撤回，影響範圍局部時簡單看過；單向門難以撤回，例如一封信寄給大約 6 萬人、昂貴的資料搬遷或資料遺失，要審到底；PR 最下面的 Merge Danger 標明門的種類與 blast radius。" aria-label="放大圖片：兩扇門與 Merge Danger" loading="lazy" role="button" src="images/web/figs/fig_doors_16x9.webp" tabindex="0"/></picture><figcaption>導讀示意圖｜兩扇門與 Merge Danger</figcaption></figure>
+<p>現行 repo：他的 <code>pr</code> skill 範本由三段組成：Summary、Evidence（改前改後的截圖、輸出或測試結果），以及 Merge Danger（門的種類與 blast radius）。</p>
+<h3>用圖與偽程式碼說明在改什麼</h3>
+<p>第二個原則是讓人最快理解「為什麼改」。Matt 試過很多方法，最好用的是偽程式碼與圖。他特別感謝 HumanLayer 的 Dex Horthy 做的 <code>show-me</code> skill，它盡量少用文字，改用 Mermaid 圖、UML 和簡單的草圖呈現變更。他舉的簡單例子是：一個 CLI 新增了一個指令、多了兩個旗標，用一張小圖就看懂。</p>
+<p>現行 repo：<code>pr</code> skill 的檔案開頭，就標註了 show-me 的來源與作者。</p>
+<h3>審的是產生程式碼的系統</h3>
+<p>第三個原則談的是流程本身。Matt 說，現在團隊都圍繞同樣的 skill 檔與引導檔協作，等於一起替代理人打造工作環境，所以產生程式碼的流程，跟程式碼本身同樣重要。人類審查時，審的其實是那個系統。</p>
+<p>他由此推出一個目標：同一則留言不要寫兩次，同一種錯誤不要在兩個 PR 裡抓到兩次。</p>
+<h3>複利：retro</h3>
+<p>要達到這個目標，他做了一個新的 skill，叫 <code>retro</code>。你可以拿一次代理人的工作紀錄、一個 PR 加上它的工作紀錄，或過去一週所有 PR 與審查意見，請它做回顧。它會提出改進代理人工作環境的建議，包含：</p>
+<ul>
+<li>該新增哪些自動檢查</li>
+<li>編碼標準該怎麼增刪</li>
+<li>導航：代理人要花多久才找到資訊，<code>AGENTS.md</code> 裡能不能放個指標</li>
+<li>工具成本：哪些工具呼叫特別耗 token</li>
+<li>引導檔與 skill 是否太肥</li>
+</ul>
+<p>他說這是一種複利：這一次人類審查做得好，下一次審查的品質就更高，自己也少做一點事。</p>
+<figure class="section-figure"><picture><source media="(max-width: 640px)" srcset="images/web/figs/fig_retro_9x16.webp"/><img alt="retro 以一次 session、PR 加工作紀錄，或一週的 PR 與審查意見為輸入，產出兩類建議：新增自動檢查、更新編碼標準，也看導航指標、工具成本與引導檔是否太肥；目標是同一則留言不寫兩次。" aria-label="放大圖片：retro 的回饋迴圈" loading="lazy" role="button" src="images/web/figs/fig_retro_16x9.webp" tabindex="0"/></picture><figcaption>導讀示意圖｜retro 的回饋迴圈</figcaption></figure>
+<p>現行 repo：retro 把違規分成機械式與判斷式。屬於固定語法樣式、禁用 API 這類機械式問題，優先寫成確定性的檢查（linter 規則、pre-commit hook 或 CI）；只有真正需要判斷的，才寫進 <code>CODING_STANDARDS.md</code>。</p>
+<h2 id="s5">重點結論與實際啟示</h2>
+<h3>先留意三件事</h3>
+<ul>
+<li>演講的論點多半來自 Matt 的個人經驗，沒有對照實驗。「實作者負擔過重、審查者負擔較輕」是有道理的推論，仍待在自己的專案驗證。</li>
+<li>他是這些 skill 的作者，演講也在介紹它們。想採用前，建議先讀 skill 檔案本身，再決定要不要照單全收。</li>
+<li>版本：演講結尾他說這週要出 v1.3。上游在演講後的 2026 年 9 月 29 日合併了 release/v1.3 的 PR，標題寫明 graduate（升格）<code>implement-spec</code>、<code>pr</code>、<code>retro</code>，內文顯示它們是從 in-progress 目錄移到 engineering 目錄；但在 10 月 2 日查詢時，套件版本號、Releases 與 Tags 頁最新都還是 v1.2.3。想用的話，以儲存庫現況為準。</li>
+</ul>
+<h3>帶得走的四件事</h3>
+<ul>
+<li>看到綠燈，先確認測試真的跑了程式，而且失敗時跟使用者遇到的問題有關。</li>
+<li>把編碼標準放到審查代理人，不放進實作代理人；審查代理人預設直接 commit 修正（這是 Matt 的主張，現行 code-review skill 只出報告）。</li>
+<li>PR 最下面標出是哪種門、影響多大，讓審查者知道把力氣花在哪裡。</li>
+<li>把每次審查的發現，用 retro 轉成下一次的檢查與標準。</li>
+</ul>
+<h2 id="s6">來源清單</h2>
+<p><strong>影片與活動</strong></p>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=LlgiOCmFG_w" rel="noopener noreferrer" target="_blank">Fixing the PR Bottleneck — Matt Pocock, AIHero</a>（頻道 AI Engineer，2026-09-26 發布（臺北時間），約 22 分鐘）</li>
+<li><a href="https://ai.engineer/paris/2026" rel="noopener noreferrer" target="_blank">AI Engineer Paris 2026 議程</a></li>
+</ul>
+<p><strong>Matt Pocock 的 skills（GitHub 原始檔，現行 repo）</strong></p>
+<ul>
+<li><a href="https://github.com/mattpocock/skills" rel="noopener noreferrer" target="_blank">mattpocock/skills 儲存庫</a></li>
+<li><a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/improve-codebase-architecture/SKILL.md" rel="noopener noreferrer" target="_blank">improve-codebase-architecture</a></li>
+<li><a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/code-review/SKILL.md" rel="noopener noreferrer" target="_blank">code-review</a></li>
+<li><a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/pr/SKILL.md" rel="noopener noreferrer" target="_blank">pr</a></li>
+<li><a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/retro/SKILL.md" rel="noopener noreferrer" target="_blank">retro</a></li>
+</ul>
+<p><strong>引用的原始出處</strong></p>
+<ul>
+<li><a href="https://github.com/humanlayer/skills/blob/main/plugins/show-me/skills/show-me/SKILL.md" rel="noopener noreferrer" target="_blank">HumanLayer：show-me skill</a>（Dex Horthy）</li>
+<li><a href="https://s2.q4cdn.com/299287126/files/doc_financials/annual/2015-Letter-to-Shareholders.PDF" rel="noopener noreferrer" target="_blank">Amazon 2015 Letter to Shareholders（Jeff Bezos）</a></li>
+<li><a href="https://web.stanford.edu/~ouster/cgi-bin/book.php" rel="noopener noreferrer" target="_blank">John Ousterhout：A Philosophy of Software Design</a></li>
+</ul>
+</main>
+<footer>本頁為依公開演講與公開原始檔整理的導讀，非 Matt Pocock 或 AI Engineer 官方內容。</footer>
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="圖片放大檢視"><button type="button" aria-label="關閉放大檢視">關閉（Esc）</button><img src="" alt=""></div>
+<script>
+(function(){
+  var box=document.getElementById('lightbox'), big=box.querySelector('img'), btn=box.querySelector('button'), last=null;
+  function open(img){last=img;big.src=img.currentSrc||img.src;big.alt=img.alt;box.classList.add('is-open');btn.focus();}
+  function close(){box.classList.remove('is-open');big.removeAttribute('src');if(last){last.focus();}}
+  document.querySelectorAll('figure img').forEach(function(img){
+    img.addEventListener('click',function(){open(img);});
+    img.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();open(img);}});
+  });
+  box.addEventListener('click',function(e){if(e.target===box||e.target===btn){close();}});
+  document.addEventListener('keydown',function(e){
+    if(!box.classList.contains('is-open'))return;
+    if(e.key==='Escape'){close();}
+    if(e.key==='Tab'){e.preventDefault();btn.focus();}
+  });
+})();
+</script>
+</body>
+</html>
